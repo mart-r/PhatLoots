@@ -1,6 +1,8 @@
 package com.codisimus.plugins.phatloots;
 
 import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -140,5 +142,23 @@ public class PhatLootsCommandSender implements ConsoleCommandSender {
     @Override
     public void sendRawMessage(String s) {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void sendMessage(UUID arg0, String arg1) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void sendMessage(UUID arg0, String[] arg1) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void sendRawMessage(UUID arg0, String arg1) {
+        // TODO Auto-generated method stub
+        
     }
 }
