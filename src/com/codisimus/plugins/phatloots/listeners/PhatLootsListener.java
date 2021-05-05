@@ -8,6 +8,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -49,7 +50,7 @@ public class PhatLootsListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        boolean looted = PhatLootsAPI.loot(event.getClickedBlock(), player, autoSpill);
+        boolean looted = PhatLootsAPI.loot(event.getClickedBlock(), player, autoSpill, event.useInteractedBlock() != Result.ALLOW);
 
         if (looted) {
             event.setCancelled(true);

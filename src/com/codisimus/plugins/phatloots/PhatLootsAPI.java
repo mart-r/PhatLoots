@@ -111,9 +111,22 @@ public class PhatLootsAPI {
      * @return true if the Block was linked and looted, false otherwise
      */
     public static boolean loot(Block block, Player player, boolean autoSpill) {
+        return loot(block, player, autoSpill, false);
+    }
+
+    public static boolean loot(Block block, Player player, boolean autoSpill, boolean eventCancelled) {
         LinkedList<PhatLoot> phatLoots = PhatLoots.getPhatLoots(block, player);
         if (phatLoots.isEmpty()) {
             return false;
+        }
+        // check for cancelled event
+        if (eventCancelled) {
+            for (PhatLoot loot : phatLoots) {
+                // requires ALL to have ignore cancelled setting
+                if (!loot.ignoreCancelled) {
+                    return false;
+                }
+            }
         }
 
         PhatLootChest plChest = PhatLootChest.getChest(block);
