@@ -26,7 +26,7 @@ public class PhatLootsListener implements Listener {
      *
      * @param event The PlayerInteractEvent that occurred
      */
-    @EventHandler (ignoreCancelled = true)
+    @EventHandler (ignoreCancelled = false)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getHand() != EquipmentSlot.HAND) {
             return;
