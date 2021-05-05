@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -119,6 +120,7 @@ public class PhatLootsAPI {
 
         //Roll for Loot of each linked PhatLoot
         boolean flagToBreak = true;
+        List<Particle> particles = new ArrayList<>();
         for (PhatLoot phatLoot : phatLoots) {
             //AutoSpill only works with break and respawn
             //Break and respawn only works on global PhatLoots
@@ -129,10 +131,16 @@ public class PhatLootsAPI {
                 //Don't break the Chest if any PhatLoots return false
                 flagToBreak = false;
             }
+            if (phatLoot.particle != null) {
+                particles.add(phatLoot.particle);
+            }
         }
 
         if (flagToBreak) {
             plChest.breakChest(player, plChest.getResetTime(phatLoots));
+        }
+        for (Particle particle : particles) {
+            player.spawnParticle(particle, block.getLocation().add(0.5, 0.5, 0.5), 10);
         }
         return true;
     }
