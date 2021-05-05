@@ -65,6 +65,7 @@ public final class PhatLoot implements ConfigurationSerializable {
     public boolean round;
     public boolean autoLoot;
     public boolean breakAndRespawn;
+    public boolean ignoreCancelled;
     public Particle particle;
     private Set<PhatLootChest> chests = new HashSet<>(); //Set of Chests linked to this PhatLoot
     private Properties lootTimes = new Properties(); //PhatLootChest'PlayerName=Year'Day'Hour'Minute'Second
@@ -1181,6 +1182,7 @@ public final class PhatLoot implements ConfigurationSerializable {
 
         map.put("LootList", lootList);
         map.put("LootConditions", lootConditions);
+        map.put("IgnoreCancelled", ignoreCancelled);
         return map;
     }
 
@@ -1216,6 +1218,11 @@ public final class PhatLoot implements ConfigurationSerializable {
                     PhatLoots.logger.warning("Unable to parse particle: " + particleName);
                     particle = null;
                 }
+            }
+            if (map.containsKey("IgnoreCancelled")) {
+                ignoreCancelled = (Boolean) map.get(currentLine = "IgnoreCancelled");
+            } else {
+                ignoreCancelled = false;
             }
 
             //Check which version the file is
