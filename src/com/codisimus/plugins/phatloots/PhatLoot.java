@@ -1183,6 +1183,9 @@ public final class PhatLoot implements ConfigurationSerializable {
         map.put("LootList", lootList);
         map.put("LootConditions", lootConditions);
         map.put("IgnoreCancelled", ignoreCancelled);
+        if (particle != null) {
+            map.put("Particle", particle.name());
+        }
         return map;
     }
 
