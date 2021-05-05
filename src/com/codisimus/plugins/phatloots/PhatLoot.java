@@ -294,6 +294,10 @@ public final class PhatLoot implements ConfigurationSerializable {
                 //Open the Inventory if it is not already open
                 Inventory inv = chest.getInventory(getUser(player), title);
                 if (player.getOpenInventory().getTopInventory() != inv) {
+                    if (!inv.getViewers().isEmpty()) {
+                        player.sendMessage(PhatLootsConfig.chestOpen);
+                        return flagToBreak;
+                    }
                     chest.openInventory(player, inv, global);
                 }
                 if (chest.isDispenser()) {
