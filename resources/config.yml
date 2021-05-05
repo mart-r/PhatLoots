@@ -146,6 +146,7 @@ Messages:
     EmptyChestTimeRemaining: '&4You must wait &6<time>&4 to receive more loot!'
     CommandTimeRemaining: '&4You must wait &6<time>&4 to receive more loot!'
     DispenserTimeRemaining: ''
+    ChestOpen: '&cThe chest is already opened by somebody else'
     MobTimeRemaining: '&4You must wait &6<time>&4 to receive more loot!'
     MobDroppedMoney: '&5You loot &6<amount>.'
     MobDroppedItem: ''

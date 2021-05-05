@@ -47,6 +47,7 @@ public class PhatLootsConfig {
     public static String emptyChestTimeRemaining;
     public static String commandTimeRemaining;
     public static String dispenserTimeRemaining;
+    public static String chestOpen;
     public static String overflow;
     public static String mobTimeRemaining;
     public static String mobDroppedMoney;
@@ -122,6 +123,7 @@ public class PhatLootsConfig {
         emptyChestTimeRemaining = getString(section, "EmptyChestTimeRemaining");
         commandTimeRemaining = getString(section, "CommandTimeRemaining");
         dispenserTimeRemaining = getString(section, "DispenserTimeRemaining");
+        chestOpen = getString(section, "ChestOpen");
         mobTimeRemaining = getString(section, "MobTimeRemaining");
         mobDroppedMoney = getString(section, "MobDroppedMoney");
         mobDroppedItem = getString(section, "MobDroppedItem");
