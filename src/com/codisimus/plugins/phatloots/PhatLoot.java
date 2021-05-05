@@ -805,7 +805,7 @@ public final class PhatLoot implements ConfigurationSerializable {
      * @return the String of the user
      */
     private String getUser(Player player) {
-        return /*global || */player == null
+        return global || player == null
                ? "global"
                : player.getUniqueId().toString();
     }
