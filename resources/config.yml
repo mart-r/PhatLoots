@@ -226,6 +226,8 @@ Defaults:
     ##An amount of 0 will mean that each loot within the collection is rolled for individually
     ItemsPerColl: 1
 
+    ##The particle to be displayed for all loot (by default)
+    Particle: null
 
 
 ################### OTHER ####################

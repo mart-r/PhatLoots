@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,6 +32,7 @@ public class PhatLootsConfig {
     static boolean defaultRound;
     static boolean defaultAutoLoot;
     static boolean defaultBreakAndRespawn;
+    static Particle defaultParticle;
     public static boolean restrictAll; //True if all PhatLoots should require permission
     public static Set<String> restricted = new HashSet<>();
     public static boolean persistentDataContainerLinks;
@@ -176,6 +178,13 @@ public class PhatLootsConfig {
         defaultHours = section.getInt("Hours");
         defaultMinutes = section.getInt("Minutes");
         defaultSeconds = section.getInt("Seconds");
+
+        String particleName = section.getString("Particle", "N/A");
+        try {
+            defaultParticle = Particle.valueOf(particleName);
+        } catch (IllegalArgumentException e) {
+            defaultParticle = null;
+        }
 
         /* OTHER */
 
