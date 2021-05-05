@@ -571,12 +571,12 @@ public class PhatLootChest {
         }
 
         if (useBreakAndRepawn) {
-            //Return if the Inventory is not empty
-            for (ItemStack item : inv.getContents()) {
-                if (item != null && item.getType() != Material.AIR) {
-                    return;
-                }
-            }
+            // //Return if the Inventory is not empty
+            // for (ItemStack item : inv.getContents()) {
+            //     if (item != null && item.getType() != Material.AIR) {
+            //         return;
+            //     }
+            // }
             breakChest(player, getResetTime());
         }
     }
