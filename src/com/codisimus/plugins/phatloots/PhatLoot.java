@@ -16,6 +16,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -64,6 +65,7 @@ public final class PhatLoot implements ConfigurationSerializable {
     public boolean round;
     public boolean autoLoot;
     public boolean breakAndRespawn;
+    public Particle particle;
     private Set<PhatLootChest> chests = new HashSet<>(); //Set of Chests linked to this PhatLoot
     private Properties lootTimes = new Properties(); //PhatLootChest'PlayerName=Year'Day'Hour'Minute'Second
 
@@ -83,6 +85,7 @@ public final class PhatLoot implements ConfigurationSerializable {
         round = PhatLootsConfig.defaultRound;
         autoLoot = PhatLootsConfig.defaultAutoLoot;
         breakAndRespawn = PhatLootsConfig.defaultBreakAndRespawn;
+        particle = PhatLootsConfig.defaultParticle;
 
         // Adds default conditions when a PhatLoot is made
         lootConditions.addAll(PhatLoots.plugin.getDefaultConditions());
@@ -1198,6 +1201,13 @@ public final class PhatLoot implements ConfigurationSerializable {
             autoLoot = (Boolean) map.get(currentLine = "AutoLoot");
             if (map.containsKey("BreakAndRespawn")) {
                 breakAndRespawn = (Boolean) map.get(currentLine = "BreakAndRespawn");
+            }
+            String particleName = (String) map.get(currentLine = "Particle");
+            try {
+                particle = Particle.valueOf(particleName);
+            } catch (IllegalArgumentException e) {
+                PhatLoots.logger.warning("Unable to parse particle: " + particleName);
+                particle = null;
             }
 
             //Check which version the file is
