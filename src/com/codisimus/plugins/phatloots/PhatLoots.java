@@ -34,7 +34,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Loads Plugin and manages Data/Listeners/etc.
@@ -68,7 +67,9 @@ public class PhatLoots extends JavaPlugin {
         saveLootTimes();
 
         //Respawn all chests
-        for (PhatLootChest chest : (Collection<PhatLootChest>) PhatLootChest.chestsToRespawn.clone()) {
+        @SuppressWarnings("unchecked")
+        Collection<PhatLootChest> chests = (Collection<PhatLootChest>) PhatLootChest.chestsToRespawn.clone();
+        for (PhatLootChest chest : chests) {
             chest.respawn(RespawnReason.PLUGIN_DISABLED);
         }
     }
@@ -607,11 +608,11 @@ public class PhatLoots extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
-        econ = (Economy) rsp.getProvider();
+        econ = rsp.getProvider();
         return econ != null;
     }
 
