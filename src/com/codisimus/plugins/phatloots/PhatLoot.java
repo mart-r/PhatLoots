@@ -6,7 +6,6 @@ import com.codisimus.plugins.phatloots.loot.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import com.codisimus.plugins.phatloots.util.PhatLootsUtil;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -803,7 +802,7 @@ public final class PhatLoot implements ConfigurationSerializable {
      * @return the String of the user
      */
     private String getUser(Player player) {
-        return global || player == null
+        return /*global || */player == null
                ? "global"
                : player.getUniqueId().toString();
     }
