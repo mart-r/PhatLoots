@@ -255,6 +255,7 @@ public class PhatLoots extends JavaPlugin {
         pm.registerEvents(new PhatLootsListener(), this);
         pm.registerEvents(new InventoryListener(), this);
         pm.registerEvents(new InventoryConditionListener(), this);
+        pm.registerEvents(new LoadedPhatLootListener(this), this);
 
         if (pm.isPluginEnabled("Citizens")) {
             logger.info("Listening for Citizens NPC deaths");
