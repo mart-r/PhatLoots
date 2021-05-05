@@ -1203,11 +1203,15 @@ public final class PhatLoot implements ConfigurationSerializable {
                 breakAndRespawn = (Boolean) map.get(currentLine = "BreakAndRespawn");
             }
             String particleName = (String) map.get(currentLine = "Particle");
-            try {
-                particle = Particle.valueOf(particleName);
-            } catch (IllegalArgumentException e) {
-                PhatLoots.logger.warning("Unable to parse particle: " + particleName);
+            if (particleName == null) {
                 particle = null;
+            } else {
+                try {
+                    particle = Particle.valueOf(particleName);
+                } catch (IllegalArgumentException e) {
+                    PhatLoots.logger.warning("Unable to parse particle: " + particleName);
+                    particle = null;
+                }
             }
 
             //Check which version the file is
