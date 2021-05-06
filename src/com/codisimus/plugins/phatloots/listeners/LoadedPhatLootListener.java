@@ -9,11 +9,12 @@ import com.codisimus.plugins.phatloots.PhatLoot;
 import com.codisimus.plugins.phatloots.PhatLootChest;
 import com.codisimus.plugins.phatloots.PhatLoots;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -26,18 +27,25 @@ public class LoadedPhatLootListener implements Listener {
     public LoadedPhatLootListener(PhatLoots plugin) {
         long delay = 4L; // TODO - configurable
         plugin.getServer().getScheduler().runTaskTimer(plugin, this::tick, delay, delay);
+        plugin.getServer().getScheduler().runTaskLater(plugin, this::initialize, 5L); // initialize chunks
     }
 
-    @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
-        Chunk chunk = event.getChunk();
+    private void initialize() {
+        for (World world : Bukkit.getWorlds()) {
+            for (Chunk chunk : world.getLoadedChunks()) {
+                loadedChunk(chunk);
+            }
+        }
+    }
+
+    private void loadedChunk(Chunk chunk) {
         LoadedChunk loaded = new LoadedChunk(chunk);
         for (PhatLootChest chest : PhatLootChest.getChests()) {
             Block block = chest.getBlock();
             Location loc = block.getLocation();
             int chunkX = loc.getBlockX() >> 4;
             int chunkZ = loc.getBlockZ() >> 4;
-            if (chunkX == chunk.getX() && chunkZ == chunk.getZ()) {
+            if (chunkX == chunk.getX() && chunkZ == chunk.getZ() && chunk.getWorld() == loc.getWorld()) {
                 Map<Particle, Integer> particles = new HashMap<>();
                 for (PhatLoot loot : PhatLoots.getPhatLoots(block)) {
                     if (loot.particle != null) {
@@ -60,6 +68,12 @@ public class LoadedPhatLootListener implements Listener {
     }
 
     @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        Chunk chunk = event.getChunk();
+        loadedChunk(chunk);
+    }
+
+    @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
         loadedChunks.remove(event.getChunk());
     }
@@ -67,13 +81,12 @@ public class LoadedPhatLootListener implements Listener {
     private void tick() {
         for (LoadedChunk chunk : loadedChunks.values()) {
             for (PhatLootChestParticles info : chunk.chests) {
-                Location chestLoc = info.chest.getBlock().getLocation();
+                Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 1.5, 0.5); // TODO -custom?
                 for (Map.Entry<Particle, Integer> entry : info.particles.entrySet()) {
                     Particle particle = entry.getKey();
                     int multiplier = entry.getValue();
-                    for (Player player : chunk.chunk.getWorld().getPlayers()) {
-                        player.spawnParticle(particle, chestLoc, DEFAULT_PARTICLES * multiplier);
-                    }
+                    World world = chunk.chunk.getWorld();
+                    world.spawnParticle(particle, chestLoc, DEFAULT_PARTICLES * multiplier);
                 }
             }
         }
@@ -89,7 +102,8 @@ public class LoadedPhatLootListener implements Listener {
         }
 
         public void add(PhatLootChestParticles chest) {
-            if (chest.chest.getBlock().getChunk() != chunk) {
+            if (chest.chest.getBlock().getChunk().getX() != chunk.getX()
+                    || chest.chest.getBlock().getChunk().getZ() != chunk.getZ()) {
                 throw new IllegalArgumentException("Can only add chests in the same chunk");
             }
             chests.add(chest);
