@@ -22,7 +22,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class LoadedPhatLootListener implements Listener {
-    private static final int DEFAULT_PARTICLES = 2;
+    private static final int DEFAULT_PARTICLES = 1;
     private final Map<World, WorldChunks> worldChunks = new HashMap<>();
 
     public LoadedPhatLootListener(PhatLoots plugin) {
@@ -69,7 +69,7 @@ public class LoadedPhatLootListener implements Listener {
                     continue; // first come, first serve
                 }
                 ParticleOptions options = new ParticleOptions(loot.particleOffset, loot.particleHeightAdd,
-                        loot.particleExtra);
+                        loot.particleExtra, loot.particleAmount);
                 particles.put(loot.particle, options);
             }
         }
@@ -158,7 +158,8 @@ public class LoadedPhatLootListener implements Listener {
                     double addY = options.heightAdd;
                     double extra = options.extra;
                     World world = chunk.chunk.getWorld();
-                    int count = DEFAULT_PARTICLES;// * multiplier;
+                    int multiplier = options.particleAmount;
+                    int count = DEFAULT_PARTICLES * multiplier;
                     // Particle particle double x, double y, double z, int count, double offsetX,
                     // double offsetY, double offsetZ, double extra, T data, boolean force
                     world.spawnParticle(particle, x, y + addY, z, count, offset, offset, offset, extra, null, false);
@@ -204,11 +205,13 @@ public class LoadedPhatLootListener implements Listener {
         private final double offset;
         private final double heightAdd;
         private final double extra;
+        private final int particleAmount;
 
-        public ParticleOptions(double offset, double heightAdd, double extra) {
+        public ParticleOptions(double offset, double heightAdd, double extra, int particleAmount) {
             this.offset = offset;
             this.heightAdd = heightAdd;
             this.extra = extra;
+            this.particleAmount = particleAmount;
         }
 
     }

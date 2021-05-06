@@ -70,6 +70,7 @@ public final class PhatLoot implements ConfigurationSerializable {
     public double particleOffset;
     public double particleHeightAdd;
     public double particleExtra;
+    public int particleAmount;
     private Set<PhatLootChest> chests = new HashSet<>(); //Set of Chests linked to this PhatLoot
     private Properties lootTimes = new Properties(); //PhatLootChest'PlayerName=Year'Day'Hour'Minute'Second
 
@@ -93,6 +94,7 @@ public final class PhatLoot implements ConfigurationSerializable {
         particleOffset = PhatLootsConfig.particleOffset;
         particleHeightAdd = PhatLootsConfig.particleHeightAdd;
         particleExtra = PhatLootsConfig.particleExtra;
+        particleAmount = 1; // default
 
         // Adds default conditions when a PhatLoot is made
         lootConditions.addAll(PhatLoots.plugin.getDefaultConditions());
@@ -1242,10 +1244,12 @@ public final class PhatLoot implements ConfigurationSerializable {
                 particleOffset = (Double) map.get(currentLine = "particleOffset");
                 particleHeightAdd = (Double) map.get(currentLine = "ParticleHeightAdd");
                 particleExtra = (Double) map.get(currentLine = "ParticleExtra");
+                particleAmount = (Integer) map.get(currentLine = "ParticleAmount");
             } else {
                 particleOffset = PhatLootsConfig.particleOffset;
                 particleHeightAdd = PhatLootsConfig.particleHeightAdd;
                 particleExtra = PhatLootsConfig.particleExtra;
+                particleAmount = 1; // default
             }
 
             //Check which version the file is
