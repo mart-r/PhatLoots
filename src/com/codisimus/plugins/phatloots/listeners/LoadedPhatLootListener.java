@@ -140,12 +140,14 @@ public class LoadedPhatLootListener implements Listener {
     }
 
     private void tickWorld(WorldChunks chunks) {
+        double offset = PhatLootsConfig.particleOffset;
+        double addY = PhatLootsConfig.particleHeightAdd;
         for (LoadedChunk chunk : chunks.chunks.values()) {
             for (PhatLootChestParticles info : chunk.chests) {
                 if (info.chest.getBlock().getType().isAir()) {
                     continue; // ignore broken chests
                 }
-                Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 1.5, 0.5); // TODO -custom?
+                Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 0.5 + addY, 0.5);
                 double x = chestLoc.getX();
                 double y = chestLoc.getY();
                 double z = chestLoc.getZ();
@@ -156,7 +158,6 @@ public class LoadedPhatLootListener implements Listener {
                     int count = DEFAULT_PARTICLES * multiplier;
                     // Particle particle double x, double y, double z, int count, double offsetX,
                     // double offsetY, double offsetZ, double extra, T data, boolean force
-                    double offset = PhatLootsConfig.particleOffset;
                     world.spawnParticle(particle, x, y, z, count, offset, offset, offset, 0, null, false);
                 }
             }
