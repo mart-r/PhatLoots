@@ -156,7 +156,7 @@ public class LoadedPhatLootListener implements Listener {
                     int count = DEFAULT_PARTICLES * multiplier;
                     // Particle particle double x, double y, double z, int count, double offsetX,
                     // double offsetY, double offsetZ, double extra, T data, boolean force
-                    double offset = 0.1; // TODO - customize
+                    double offset = PhatLootsConfig.particleOffset;
                     world.spawnParticle(particle, x, y, z, count, offset, offset, offset, 0, null, false);
                 }
             }
