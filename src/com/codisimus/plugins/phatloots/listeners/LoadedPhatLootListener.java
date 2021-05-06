@@ -146,11 +146,18 @@ public class LoadedPhatLootListener implements Listener {
                     continue; // ignore broken chests
                 }
                 Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 1.5, 0.5); // TODO -custom?
+                double x = chestLoc.getX();
+                double y = chestLoc.getY();
+                double z = chestLoc.getZ();
                 for (Map.Entry<Particle, Integer> entry : info.particles.entrySet()) {
                     Particle particle = entry.getKey();
                     int multiplier = entry.getValue();
                     World world = chunk.chunk.getWorld();
-                    world.spawnParticle(particle, chestLoc, DEFAULT_PARTICLES * multiplier);
+                    int count = DEFAULT_PARTICLES * multiplier;
+                    // Particle particle double x, double y, double z, int count, double offsetX,
+                    // double offsetY, double offsetZ, double extra, T data, boolean force
+                    double offset = 0.1; // TODO - customize
+                    world.spawnParticle(particle, x, y, z, count, offset, offset, offset, 0, null, false);
                 }
             }
         }
