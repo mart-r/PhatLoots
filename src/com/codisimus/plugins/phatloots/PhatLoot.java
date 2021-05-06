@@ -859,6 +859,7 @@ public final class PhatLoot implements ConfigurationSerializable {
      * @param block The given Block
      */
     public void removeChest(Block block) {
+        PhatLoots.plugin.getLoadedListener().removeChest(PhatLootChest.getChest(block));
         removeChest(PhatLootChest.getChest(block));
     }
 

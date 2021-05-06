@@ -120,6 +120,19 @@ public class LoadedPhatLootListener implements Listener {
         chunks.chunks.remove(event.getChunk());
     }
 
+    public void removeChest(PhatLootChest chest) {
+        Block block = chest.getBlock();
+        WorldChunks wc = worldChunks.get(block.getWorld());
+        if (wc == null) {
+            return;
+        }
+        LoadedChunk loaded = wc.chunks.get(block.getChunk());
+        if (loaded == null) {
+            return;
+        }
+        loaded.remove(chest);
+    }
+
     private void tick() {
         for (WorldChunks chunks : worldChunks.values()) {
             tickWorld(chunks);
@@ -158,6 +171,10 @@ public class LoadedPhatLootListener implements Listener {
                 throw new IllegalArgumentException("Can only add chests in the same chunk");
             }
             chests.add(chest);
+        }
+
+        public void remove(PhatLootChest chest) {
+            chests.removeIf((ccp) -> ccp.chest == chest);
         }
 
     }
