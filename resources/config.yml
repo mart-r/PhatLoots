@@ -245,10 +245,13 @@ RestrictedPhatLoots:
 #    - 'Epic'
 #    - 'Donator'
 
-##delay ticks for particlesa
+##delay ticks for particles
 ParticleDelayTicks: 4
+##offset for particles
 ParticleOffset: 0.1
 ParticleHeightAdd: 1.0
+##extra parameter (usually speed) for particles
+ParticleExtra: 0
 
 ##Whenever an Item is generated that has a Tier above this number it will be logged
 MinimumTierNotification: 100

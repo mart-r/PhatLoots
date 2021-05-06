@@ -65,6 +65,7 @@ public class PhatLootsConfig {
     public static long particleDelayTicks;
     public static double particleOffset;
     public static double particleHeightAdd;
+    public static double particleExtra;
 
     public static void load() {
         FileConfiguration config = PhatLoots.plugin.getConfig();
@@ -195,6 +196,7 @@ public class PhatLootsConfig {
         particleDelayTicks = section.getLong("ParticleDelayTicks", 4L);
         particleOffset = section.getDouble("ParticleOffset", 0.1);
         particleHeightAdd = section.getDouble("ParticleHeightAdd", 1.0);
+        particleExtra = section.getInt("ParticleExtra", 0);
 
         /* OTHER */
 
