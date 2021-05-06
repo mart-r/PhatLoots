@@ -8,6 +8,7 @@ import java.util.Map;
 import com.codisimus.plugins.phatloots.PhatLoot;
 import com.codisimus.plugins.phatloots.PhatLootChest;
 import com.codisimus.plugins.phatloots.PhatLoots;
+import com.codisimus.plugins.phatloots.PhatLootsConfig;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -25,7 +26,7 @@ public class LoadedPhatLootListener implements Listener {
     private final Map<World, WorldChunks> worldChunks = new HashMap<>();
 
     public LoadedPhatLootListener(PhatLoots plugin) {
-        long delay = 4L; // TODO - configurable
+        long delay = PhatLootsConfig.particleDelayTicks;
         plugin.getServer().getScheduler().runTaskTimer(plugin, this::tick, delay, delay);
         plugin.getServer().getScheduler().runTaskLater(plugin, this::initialize, 5L); // initialize chunks
     }

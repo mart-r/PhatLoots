@@ -62,6 +62,8 @@ public class PhatLootsConfig {
 
     public static String tierPrefix;
 
+    public static long particleDelayTicks;
+
     public static void load() {
         FileConfiguration config = PhatLoots.plugin.getConfig();
 
@@ -187,6 +189,8 @@ public class PhatLootsConfig {
         } catch (IllegalArgumentException e) {
             defaultParticle = null;
         }
+
+        particleDelayTicks = section.getLong("ParticleDelayTicks", 4L);
 
         /* OTHER */
 

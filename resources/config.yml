@@ -245,6 +245,8 @@ RestrictedPhatLoots:
 #    - 'Epic'
 #    - 'Donator'
 
+##delay ticks for particlesa
+ParticleDelayTicks: 4
 
 ##Whenever an Item is generated that has a Tier above this number it will be logged
 MinimumTierNotification: 100
