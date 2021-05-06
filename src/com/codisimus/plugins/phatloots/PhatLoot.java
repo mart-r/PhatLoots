@@ -67,6 +67,9 @@ public final class PhatLoot implements ConfigurationSerializable {
     public boolean breakAndRespawn;
     public boolean ignoreCancelled;
     public Particle particle;
+    public double particleOffset;
+    public double particleHeightAdd;
+    public double particleExtra;
     private Set<PhatLootChest> chests = new HashSet<>(); //Set of Chests linked to this PhatLoot
     private Properties lootTimes = new Properties(); //PhatLootChest'PlayerName=Year'Day'Hour'Minute'Second
 
@@ -87,6 +90,9 @@ public final class PhatLoot implements ConfigurationSerializable {
         autoLoot = PhatLootsConfig.defaultAutoLoot;
         breakAndRespawn = PhatLootsConfig.defaultBreakAndRespawn;
         particle = PhatLootsConfig.defaultParticle;
+        particleOffset = PhatLootsConfig.particleOffset;
+        particleHeightAdd = PhatLootsConfig.particleHeightAdd;
+        particleExtra = PhatLootsConfig.particleExtra;
 
         // Adds default conditions when a PhatLoot is made
         lootConditions.addAll(PhatLoots.plugin.getDefaultConditions());
@@ -1187,6 +1193,9 @@ public final class PhatLoot implements ConfigurationSerializable {
         map.put("IgnoreCancelled", ignoreCancelled);
         if (particle != null) {
             map.put("Particle", particle.name());
+            map.put("ParticleOffset", particleOffset);
+            map.put("ParticleHeightAdd", particleHeightAdd);
+            map.put("ParticleExtra", particleExtra);
         }
         return map;
     }
@@ -1228,6 +1237,15 @@ public final class PhatLoot implements ConfigurationSerializable {
                 ignoreCancelled = (Boolean) map.get(currentLine = "IgnoreCancelled");
             } else {
                 ignoreCancelled = false;
+            }
+            if (particle != null) {
+                particleOffset = (Double) map.get(currentLine = "particleOffset");
+                particleHeightAdd = (Double) map.get(currentLine = "ParticleHeightAdd");
+                particleExtra = (Double) map.get(currentLine = "ParticleExtra");
+            } else {
+                particleOffset = PhatLootsConfig.particleOffset;
+                particleHeightAdd = PhatLootsConfig.particleHeightAdd;
+                particleExtra = PhatLootsConfig.particleExtra;
             }
 
             //Check which version the file is
