@@ -1241,7 +1241,7 @@ public final class PhatLoot implements ConfigurationSerializable {
                 ignoreCancelled = false;
             }
             if (particle != null) {
-                particleOffset = (Double) map.get(currentLine = "particleOffset");
+                particleOffset = (Double) map.get(currentLine = "ParticleOffset");
                 particleHeightAdd = (Double) map.get(currentLine = "ParticleHeightAdd");
                 particleExtra = (Double) map.get(currentLine = "ParticleExtra");
                 particleAmount = (Integer) map.get(currentLine = "ParticleAmount");
