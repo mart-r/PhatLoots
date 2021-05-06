@@ -99,6 +99,9 @@ public class LoadedPhatLootListener implements Listener {
     private void tickWorld(WorldChunks chunks) {
         for (LoadedChunk chunk : chunks.chunks.values()) {
             for (PhatLootChestParticles info : chunk.chests) {
+                if (info.chest.getBlock().getType().isAir()) {
+                    continue; // ignore broken chests
+                }
                 Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 1.5, 0.5); // TODO -custom?
                 for (Map.Entry<Particle, Integer> entry : info.particles.entrySet()) {
                     Particle particle = entry.getKey();
