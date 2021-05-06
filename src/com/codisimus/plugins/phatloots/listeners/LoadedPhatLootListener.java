@@ -61,15 +61,16 @@ public class LoadedPhatLootListener implements Listener {
     }
 
     private PhatLootChestParticles loadedChest(PhatLootChest chest) {
-        Map<Particle, Integer> particles = new HashMap<>();
+        Map<Particle, ParticleOptions> particles = new HashMap<>();
         for (PhatLoot loot : PhatLoots.getPhatLoots(chest.getBlock())) {
             if (loot.particle != null) {
-                Integer count = particles.get(loot.particle);
-                if (count == null) {
-                    count = 0;
+                ParticleOptions prev = particles.get(loot.particle);
+                if (prev != null) {
+                    continue; // first come, first serve
                 }
-                count++;
-                particles.put(loot.particle, count);
+                ParticleOptions options = new ParticleOptions(loot.particleOffset, loot.particleHeightAdd,
+                        loot.particleExtra);
+                particles.put(loot.particle, options);
             }
         }
         if (!particles.isEmpty()) {
@@ -140,26 +141,27 @@ public class LoadedPhatLootListener implements Listener {
     }
 
     private void tickWorld(WorldChunks chunks) {
-        double offset = PhatLootsConfig.particleOffset;
-        double addY = PhatLootsConfig.particleHeightAdd;
-        double extra = PhatLootsConfig.particleExtra;
         for (LoadedChunk chunk : chunks.chunks.values()) {
             for (PhatLootChestParticles info : chunk.chests) {
                 if (info.chest.getBlock().getType().isAir()) {
                     continue; // ignore broken chests
                 }
-                Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 0.5 + addY, 0.5);
+                Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 0.5, 0.5);
                 double x = chestLoc.getX();
                 double y = chestLoc.getY();
                 double z = chestLoc.getZ();
-                for (Map.Entry<Particle, Integer> entry : info.particles.entrySet()) {
+                for (Map.Entry<Particle, ParticleOptions> entry : info.particles.entrySet()) {
                     Particle particle = entry.getKey();
-                    int multiplier = entry.getValue();
+                    // int multiplier = entry.getValue();
+                    ParticleOptions options = entry.getValue();
+                    double offset = options.offset;
+                    double addY = options.heightAdd;
+                    double extra = options.extra;
                     World world = chunk.chunk.getWorld();
-                    int count = DEFAULT_PARTICLES * multiplier;
+                    int count = DEFAULT_PARTICLES;// * multiplier;
                     // Particle particle double x, double y, double z, int count, double offsetX,
                     // double offsetY, double offsetZ, double extra, T data, boolean force
-                    world.spawnParticle(particle, x, y, z, count, offset, offset, offset, extra, null, false);
+                    world.spawnParticle(particle, x, y + addY, z, count, offset, offset, offset, extra, null, false);
                 }
             }
         }
@@ -190,12 +192,25 @@ public class LoadedPhatLootListener implements Listener {
 
     private class PhatLootChestParticles {
         private final PhatLootChest chest;
-        private final Map<Particle, Integer> particles;
+        private final Map<Particle, ParticleOptions> particles;
 
-        public PhatLootChestParticles(PhatLootChest chest, Map<Particle, Integer> particles) {
+        public PhatLootChestParticles(PhatLootChest chest, Map<Particle, ParticleOptions> particles) {
             this.chest = chest;
             this.particles = particles;
         }
+    }
+
+    private class ParticleOptions {
+        private final double offset;
+        private final double heightAdd;
+        private final double extra;
+
+        public ParticleOptions(double offset, double heightAdd, double extra) {
+            this.offset = offset;
+            this.heightAdd = heightAdd;
+            this.extra = extra;
+        }
+
     }
 
     private class WorldChunks {
