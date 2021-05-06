@@ -31,6 +31,11 @@ public class LoadedPhatLootListener implements Listener {
         plugin.getServer().getScheduler().runTaskLater(plugin, this::initialize, 5L); // initialize chunks
     }
 
+    public void reload() {
+        worldChunks.clear();
+        PhatLoots.plugin.getServer().getScheduler().runTaskLater(PhatLoots.plugin, this::initialize, 5L);
+    }
+
     private void initialize() {
         for (World world : Bukkit.getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {

@@ -683,6 +683,7 @@ public class PhatLoots extends JavaPlugin {
         phatLoots.clear();
         plugin.reloadConfig();
         load();
+        plugin.loadedListener.reload();
 
         logger.info("PhatLoots reloaded");
         if (sender instanceof Player) {
