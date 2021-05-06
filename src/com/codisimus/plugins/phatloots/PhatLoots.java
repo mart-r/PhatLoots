@@ -58,6 +58,8 @@ public class PhatLoots extends JavaPlugin {
 
     private List<LootCondition> defaultConditions = new ArrayList<>();
 
+    private LoadedPhatLootListener loadedListener;
+
     public static void main(String[] args) {
         //Do Nothing - For debugging within NetBeans IDE
     }
@@ -255,7 +257,7 @@ public class PhatLoots extends JavaPlugin {
         pm.registerEvents(new PhatLootsListener(), this);
         pm.registerEvents(new InventoryListener(), this);
         pm.registerEvents(new InventoryConditionListener(), this);
-        pm.registerEvents(new LoadedPhatLootListener(this), this);
+        pm.registerEvents(loadedListener = new LoadedPhatLootListener(this), this);
 
         if (pm.isPluginEnabled("Citizens")) {
             logger.info("Listening for Citizens NPC deaths");
@@ -729,5 +731,9 @@ public class PhatLoots extends JavaPlugin {
 
     public static void debug(String msg) {
         logger.info("DEBUG: " + msg);
+    }
+
+    public LoadedPhatLootListener getLoadedListener() {
+        return loadedListener;
     }
 }

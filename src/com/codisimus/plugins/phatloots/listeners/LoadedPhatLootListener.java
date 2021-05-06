@@ -39,6 +39,46 @@ public class LoadedPhatLootListener implements Listener {
         }
     }
 
+    public void addChest(PhatLootChest chest) {
+        PhatLoots.plugin.getServer().getScheduler().runTask(PhatLoots.plugin, () -> addChestInternal(chest));
+    }
+
+    private void addChestInternal(PhatLootChest chest) {
+        Block block = chest.getBlock();
+        PhatLootChestParticles particles = loadedChest(chest);
+        if (particles != null) {
+            Chunk chunk = block.getChunk();
+            WorldChunks wc = worldChunks.get(block.getWorld());
+            if (wc == null) {
+                worldChunks.put(block.getWorld(), wc = new WorldChunks());
+            }
+            LoadedChunk lc = wc.chunks.get(chunk);
+            if (lc == null) {
+                wc.chunks.put(chunk, lc = new LoadedChunk(chunk));
+            }
+            lc.add(particles);
+        }
+    }
+
+    private PhatLootChestParticles loadedChest(PhatLootChest chest) {
+        Map<Particle, Integer> particles = new HashMap<>();
+        for (PhatLoot loot : PhatLoots.getPhatLoots(chest.getBlock())) {
+            if (loot.particle != null) {
+                Integer count = particles.get(loot.particle);
+                if (count == null) {
+                    count = 0;
+                }
+                count++;
+                particles.put(loot.particle, count);
+            }
+        }
+        if (!particles.isEmpty()) {
+            return new PhatLootChestParticles(chest, particles);
+        } else {
+            return null;
+        }
+    }
+
     private void loadedChunk(Chunk chunk) {
         LoadedChunk loaded = new LoadedChunk(chunk);
         for (PhatLootChest chest : PhatLootChest.getChests()) {
@@ -47,19 +87,9 @@ public class LoadedPhatLootListener implements Listener {
             int chunkX = loc.getBlockX() >> 4;
             int chunkZ = loc.getBlockZ() >> 4;
             if (chunkX == chunk.getX() && chunkZ == chunk.getZ() && chunk.getWorld() == loc.getWorld()) {
-                Map<Particle, Integer> particles = new HashMap<>();
-                for (PhatLoot loot : PhatLoots.getPhatLoots(block)) {
-                    if (loot.particle != null) {
-                        Integer count = particles.get(loot.particle);
-                        if (count == null) {
-                            count = 0;
-                        }
-                        count++;
-                        particles.put(loot.particle, count);
-                    }
-                }
-                if (!particles.isEmpty()) {
-                    loaded.add(new PhatLootChestParticles(chest, particles));
+                PhatLootChestParticles particles = loadedChest(chest);
+                if (particles != null) {
+                    loaded.add(particles);
                 }
             }
         }

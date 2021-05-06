@@ -849,6 +849,7 @@ public final class PhatLoot implements ConfigurationSerializable {
      * @param chest The given PhatLootChest
      */
     public void addChest(PhatLootChest chest) {
+        PhatLoots.plugin.getLoadedListener().addChest(chest);
         chests.add(chest);
     }
 
