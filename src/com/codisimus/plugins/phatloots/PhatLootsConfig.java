@@ -193,10 +193,10 @@ public class PhatLootsConfig {
             defaultParticle = null;
         }
 
-        particleDelayTicks = section.getLong("ParticleDelayTicks", 4L);
-        particleOffset = section.getDouble("ParticleOffset", 0.1);
-        particleHeightAdd = section.getDouble("ParticleHeightAdd", 1.0);
-        particleExtra = section.getInt("ParticleExtra", 0);
+        particleDelayTicks = config.getLong("ParticleDelayTicks", 4L);
+        particleOffset = config.getDouble("ParticleOffset", 0.1);
+        particleHeightAdd = config.getDouble("ParticleHeightAdd", 1.0);
+        particleExtra = config.getInt("ParticleExtra", 0);
 
         /* OTHER */
 
