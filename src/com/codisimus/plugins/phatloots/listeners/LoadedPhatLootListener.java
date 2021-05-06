@@ -22,7 +22,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class LoadedPhatLootListener implements Listener {
     private static final int DEFAULT_PARTICLES = 2;
-    private final Map<Chunk, LoadedChunk> loadedChunks = new HashMap<>();
+    private final Map<World, WorldChunks> worldChunks = new HashMap<>();
 
     public LoadedPhatLootListener(PhatLoots plugin) {
         long delay = 4L; // TODO - configurable
@@ -63,7 +63,12 @@ public class LoadedPhatLootListener implements Listener {
             }
         }
         if (!loaded.chests.isEmpty()) {
-            loadedChunks.put(chunk, loaded);
+            World world = chunk.getWorld();
+            WorldChunks chunks = worldChunks.get(world);
+            if (chunks == null) {
+                worldChunks.put(world, chunks = new WorldChunks());
+            }
+            chunks.chunks.put(chunk, loaded);
         }
     }
 
@@ -75,11 +80,23 @@ public class LoadedPhatLootListener implements Listener {
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
-        loadedChunks.remove(event.getChunk());
+        Chunk chunk = event.getChunk();
+        World world = chunk.getWorld();
+        WorldChunks chunks = worldChunks.get(world);
+        if (chunks == null) {
+            return;
+        }
+        chunks.chunks.remove(event.getChunk());
     }
 
     private void tick() {
-        for (LoadedChunk chunk : loadedChunks.values()) {
+        for (WorldChunks chunks : worldChunks.values()) {
+            tickWorld(chunks);
+        }
+    }
+
+    private void tickWorld(WorldChunks chunks) {
+        for (LoadedChunk chunk : chunks.chunks.values()) {
             for (PhatLootChestParticles info : chunk.chests) {
                 Location chestLoc = info.chest.getBlock().getLocation().add(0.5, 1.5, 0.5); // TODO -custom?
                 for (Map.Entry<Particle, Integer> entry : info.particles.entrySet()) {
@@ -119,6 +136,10 @@ public class LoadedPhatLootListener implements Listener {
             this.chest = chest;
             this.particles = particles;
         }
+    }
+
+    private class WorldChunks {
+        private final Map<Chunk, LoadedChunk> chunks = new HashMap<>();
     }
 
 }
