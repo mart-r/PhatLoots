@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -25,6 +26,7 @@ import org.bukkit.block.data.type.Piston;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -56,25 +58,19 @@ public class PhatLootChest {
     static String chestName;
     private String world;
     private int x, y, z;
-    private boolean isDispenser;
     private BlockState state;
     private BlockState otherHalfState;
 
     /**
-     * Constructs a new PhatLootChest with the given Block
+     * Constructs a new PhatLootChest with the given Location
      *
-     * @param block The given Block
+     * @param location The given Location
      */
-    private PhatLootChest(Block block) {
-        world = block.getWorld().getName();
-        x = block.getX();
-        y = block.getY();
-        z = block.getZ();
-        switch (block.getType()) {
-        case DISPENSER:
-        case DROPPER:
-            isDispenser = true;
-        }
+    private PhatLootChest(Location location) {
+        world = location.getWorld().getName();
+        x = location.getBlockX();
+        y = location.getBlockY();
+        z = location.getBlockZ();
     }
 
     /**
@@ -94,13 +90,6 @@ public class PhatLootChest {
         if (w == null) { //The world is not currently loaded
             PhatLoots.logger.warning("The world '" + world + "' is not currently loaded, all linked chests in this world are being unlinked.");
             PhatLoots.logger.warning("THIS CHEST UNLINKING IS PERMANANT IF YOU LINK/UNLINK ANY OTHER CHESTS IN THIS PHATLOOT!");
-        } else {
-            Block block = w.getBlockAt(x, y, z);
-            switch (block.getType()) {
-            case DISPENSER:
-            case DROPPER:
-                isDispenser = true;
-            }
         }
     }
 
@@ -112,14 +101,25 @@ public class PhatLootChest {
      */
     public static PhatLootChest getChest(Block block) {
         block = PhatLootsUtil.getLeftSide(block);
-        String key = toString(block);
-        if (chests.containsKey(key)) {
-            return chests.get(key);
-        } else {
-            PhatLootChest chest = new PhatLootChest(block);
-            chests.put(key, chest);
+        return getChest(block.getLocation());
+    }
+
+    /**
+     * Returns the PhatLootChest of the given Block
+     *
+     * @param location The given Location
+     * @return The found or created PhatLootChest
+     */
+    public static PhatLootChest getChest(Location location) {
+        String key = toString(location);
+        PhatLootChest chest = chests.get(key);
+        if (chest != null) {
             return chest;
         }
+
+        chest = new PhatLootChest(location);
+        chests.put(key, chest);
+        return chest;
     }
 
     /**
@@ -136,7 +136,7 @@ public class PhatLootChest {
         if (w == null) {
             return null;
         } else {
-            return getChest(w.getBlockAt(x, y, z));
+            return getChest(new Location(w, x, y, z));
         }
     }
 
@@ -180,7 +180,8 @@ public class PhatLootChest {
      * @return true if the PhatLootChest is a Dispenser or Dropper
      */
     public boolean isDispenser() {
-        return isDispenser;
+        Material type = Bukkit.getWorld(this.world).getBlockAt(x, y, z).getType();
+        return type == Material.DISPENSER || type == Material.DROPPER;
     }
 
     /**
@@ -353,12 +354,13 @@ public class PhatLootChest {
      * @return The new Inventory that was created
      */
     public static Inventory getInventory(String user, String name, PhatLootChest chest) {
-        if (chest != null && chest.isDispenser) {
+        if (chest != null) {
             BlockState state = chest.getBlock().getState();
             switch (state.getType()) {
-            case DISPENSER: return ((Dispenser) state).getInventory();
-            case DROPPER: return ((Dropper) state).getInventory();
-            default: chest.isDispenser = false;
+                case DISPENSER:
+                    return ((Dispenser) state).getInventory();
+                case DROPPER:
+                    return ((Dropper) state).getInventory();
             }
         }
 
@@ -445,9 +447,8 @@ public class PhatLootChest {
             }
         }
 
-        if (isDispenser) {
-            BlockState blockState = getBlock().getState();
-            switch (blockState.getType()) {
+        BlockState blockState = getBlock().getState();
+        switch (blockState.getType()) {
             case DISPENSER:
                 //Dispense until the Dispenser is empty
                 Dispenser dispenser = (Dispenser) blockState;
@@ -463,9 +464,7 @@ public class PhatLootChest {
                 }
                 break;
             default:
-                isDispenser = false;
                 break;
-            }
         }
     }
 
@@ -497,7 +496,7 @@ public class PhatLootChest {
      * @param global Whether the animation should be sent to everyone (true) or just the Player (false)
      */
     public void openInventory(Player player, Inventory inv, boolean global) {
-        if (isDispenser) {
+        if (inv.getType() == InventoryType.DROPPER || inv.getType() == InventoryType.DISPENSER) {
             return;
         }
 
@@ -505,30 +504,30 @@ public class PhatLootChest {
         player.openInventory(inv);
 
         switch (getBlock().getType()) {
-        case TRAPPED_CHEST:
-            //Trigger redstone
-            for (Block block : findRedstone(getBlock(), false)) {
-                trigger(block);
-            }
-        case ENDER_CHEST:
-        case CHEST:
-            //Play chest animations
-            Location loc = new Location(Bukkit.getWorld(world), x, y, z);
-            if (global) {
-                if (inv.getViewers().size() <= 1) { //First viewer
-                    //Play for each Player in the World
-                    for (Player p: player.getWorld().getPlayers()) {
-                        p.playSound(loc, Sound.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.75F, 0.95F);
-                        ChestAnimations.openChest(getBlock());
-                    }
+            case TRAPPED_CHEST:
+                //Trigger redstone
+                for (Block block : findRedstone(getBlock(), false)) {
+                    trigger(block);
                 }
-            } else {
-                //Play for only the individual Player
-                player.playSound(loc, Sound.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.75F, 0.95F);
-                ChestAnimations.openChest(player, getBlock());
-            }
-            break;
-        default: break;
+            case ENDER_CHEST:
+            case CHEST:
+                //Play chest animations
+                Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+                if (global) {
+                    if (inv.getViewers().size() <= 1) { //First viewer
+                        //Play for each Player in the World
+                        for (Player p: player.getWorld().getPlayers()) {
+                            p.playSound(loc, Sound.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.75F, 0.95F);
+                            ChestAnimations.openChest(getBlock());
+                        }
+                    }
+                } else {
+                    //Play for only the individual Player
+                    player.playSound(loc, Sound.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.75F, 0.95F);
+                    ChestAnimations.openChest(player, getBlock());
+                }
+                break;
+            default: break;
         }
     }
 
@@ -800,6 +799,17 @@ public class PhatLootChest {
      */
     public static String toString(Block block) {
         return block.getWorld().getName() + "'" + block.getX() + "'" + block.getY() + "'" + block.getZ();
+    }
+
+    /**
+     * Returns the String representation of the given LOcation.
+     * The format of the returned String is world'x'y'z
+     *
+     * @param location The given Location
+     * @return The String representation of the Block
+     */
+    public static String toString(Location location) {
+        return location.getWorld().getName() + "'" + location.getBlockX() + "'" + location.getBlockY() + "'" + location.getBlockZ();
     }
 
     /**

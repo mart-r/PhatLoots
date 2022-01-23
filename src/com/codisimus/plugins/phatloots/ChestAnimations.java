@@ -4,15 +4,30 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 
 public class ChestAnimations {
     private static final String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static final String NMS_PACKAGE = "net.minecraft.server." + VERSION + ".";
     private static final String CRAFTBUKKIT_PACKAGE = "org.bukkit.craftbukkit." + VERSION + ".";
+
+    private static final boolean USE_API;
+
+    static {
+        boolean useApi = true;
+        try {
+            Class.forName("org.bukkit.block.Lidded");
+        } catch (ClassNotFoundException ex) {
+            useApi = false;
+        }
+        USE_API = useApi;
+    }
 
     public static void openChest(Block block) {
         playChestAction(null, block, true);
@@ -30,23 +45,23 @@ public class ChestAnimations {
         playChestAction(player, block, false);
     }
     
-    public static void playChestActionNoReflection(Player player, Block block, boolean open) {
-        //Location location = block.getLocation();
-        //BlockPosition blockPosition = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        //int openCode = open ? 1 : 0;
-
-        //if (player != null) {
-        //    net.minecraft.server.v1_9_R1.Block nmsBlock = CraftMagicNumbers.getBlock(block);
-        //    PacketPlayOutBlockAction packet = new PacketPlayOutBlockAction(blockPosition, nmsBlock, openCode, block.getTypeId());
-        //    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-        //} else {
-        //    World world = ((CraftWorld) location.getWorld()).getHandle();
-        //    TileEntityChest tileChest = (TileEntityChest) world.getTileEntity(blockPosition);
-        //    world.playBlockAction(blockPosition, tileChest.getBlock(), 1, openCode);
-        //}
+    private static void playChestActionNoReflection(Block block, boolean open) {
+        BlockState state = block.getState();
+        if (!(state instanceof Chest chest)) {
+            return;
+        }
+        if (open) {
+            chest.open();
+        } else {
+            chest.close();
+        }
     }
 
     public static void playChestAction(Player player, Block block, boolean open) {
+        if (USE_API) {
+            playChestActionNoReflection(block, open);
+            return;
+        }
         Location location = block.getLocation();
         Object blockPosition = construct(NMS_PACKAGE + "BlockPosition", location.getX(), location.getY(), location.getZ());
         int openCode = open ? 1 : 0;

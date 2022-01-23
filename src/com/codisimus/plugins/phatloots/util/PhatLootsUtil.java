@@ -1,6 +1,5 @@
 package com.codisimus.plugins.phatloots.util;
 
-import java.io.File;
 import java.io.FilenameFilter;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -139,18 +138,17 @@ public class PhatLootsUtil {
      */
     public static Block getLeftSide(Block block) {
         switch (block.getType()) {
-        case TRAPPED_CHEST:
-        case CHEST:
-            Chest chest = (Chest) block.getState();
-            Inventory inventory = chest.getInventory();
-            //We only care about the left side because that is the Block that would be linked
-            if (inventory instanceof DoubleChestInventory) {
-                chest = (Chest) ((DoubleChestInventory) inventory).getLeftSide().getHolder();
-                block = chest.getBlock();
+            case TRAPPED_CHEST, CHEST -> {
+                Chest chest = (Chest) block.getState();
+                Inventory inventory = chest.getInventory();
+                //We only care about the left side because that is the Block that would be linked
+                if (inventory instanceof DoubleChestInventory doubleChestInventory) {
+                    chest = (Chest) doubleChestInventory.getLeftSide().getHolder();
+                    block = chest.getBlock();
+                }
             }
-            break;
-        default:
-            break;
+            default -> {
+            }
         }
         return block;
     }

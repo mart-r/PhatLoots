@@ -8,10 +8,9 @@ import com.codisimus.plugins.phatloots.gui.InventoryListener;
 import com.codisimus.plugins.phatloots.gui.Tool;
 import java.util.*;
 import com.tealcube.minecraft.bukkit.mythicdrops.MythicDropsPlugin;
+import com.tealcube.minecraft.bukkit.mythicdrops.api.MythicDropsApi;
 import com.tealcube.minecraft.bukkit.mythicdrops.api.items.ItemGenerationReason;
 import com.tealcube.minecraft.bukkit.mythicdrops.api.tiers.Tier;
-import com.tealcube.minecraft.bukkit.mythicdrops.tiers.TierMap;
-import com.tealcube.minecraft.bukkit.mythicdrops.utils.ItemStackUtil;
 import com.tealcube.minecraft.bukkit.mythicdrops.utils.TierUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -183,9 +182,6 @@ public class MythicDropsItem extends Loot {
         while (amount > 0) {
             ItemStack mis = MythicDropsPlugin.getNewDropBuilder().useDurability(false)
                     .withItemGenerationReason(ItemGenerationReason.EXTERNAL).withTier(tier).build();
-            if (durabilityLower > 0 || durabilityUpper > 0) {
-                mis.setDurability((short) ItemStackUtil.getDurabilityForMaterial(mis.getType(), durabilityLower, durabilityUpper));
-            }
             lootBundle.addItem(mis);
             amount--;
         }
@@ -293,7 +289,8 @@ public class MythicDropsItem extends Loot {
         if (tierList == null) {
             //Cache Tiers alphabetically
             tierList = new ArrayList<>();
-            for (Tier tier : TierMap.INSTANCE.values()) {
+
+            for (Tier tier : MythicDropsApi.getMythicDrops().getTierManager().get()) {
                 tierList.add(tier.getName());
             }
             Collections.sort(tierList);

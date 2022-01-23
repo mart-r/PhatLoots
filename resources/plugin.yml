@@ -6,7 +6,7 @@ author: Codisimus
 authors: [Redned]
 website: www.codisimus.com
 description: Chests with randomly generated money/items
-load: postworld
+load: POSTWORLD
 softdepend: [Vault, MythicDrops, RegionTools, WorldGuard, Econ, Votifier, Multiverse-Core, PlaceholderAPI, WorldEdit, Citizens]
 commands:
   loot:

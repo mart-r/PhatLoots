@@ -95,10 +95,6 @@ public class PhatLootsListener implements Listener {
 
         //Cancel if the Block was not broken by a Player
         Player player = event.getPlayer();
-        if (player == null) {
-            event.setCancelled(true);
-            return;
-        }
 
         //Cancel if the Block was not broken by an Admin
         if (!player.hasPermission("phatloots.admin")) {

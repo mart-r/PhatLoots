@@ -1,8 +1,10 @@
 package com.codisimus.plugins.phatloots.regions;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,7 +26,11 @@ public class WorldGuardRegionHook implements RegionHook {
     @Override
     public List<String> getRegionNames(Location loc) {
         List<String> regionNames = new ArrayList<>(1);
-        ApplicableRegionSet applicableRegionSet = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(loc.getWorld())).getApplicableRegions(BukkitAdapter.asBlockVector(loc));
+        org.bukkit.World bukkitWorld = loc.getWorld();
+        if (bukkitWorld == null)
+            return regionNames;
+        World world = BukkitAdapter.adapt(bukkitWorld);
+        ApplicableRegionSet applicableRegionSet = WorldGuard.getInstance().getPlatform().getRegionContainer().get(world).getApplicableRegions(BukkitAdapter.asBlockVector(loc));
         Set<ProtectedRegion> regionSet = applicableRegionSet.getRegions();
 
         //Eliminate all parent Regions

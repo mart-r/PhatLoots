@@ -56,6 +56,12 @@ public class PhatLootsConfig {
     public static String lootMessage;
     public static String lootBroadcast;
     public static String lootConditionsNotMet;
+    public static String resetTimeForever;
+    public static String resetTimeDays;
+    public static String resetTimeHours;
+    public static String resetTimeMinutes;
+    public static String resetTimeSeconds;
+    public static String resetTimeMilliseconds;
 
     public static boolean replaceBlockLoot;
     public static boolean blockLootEnchantBonus;
@@ -136,6 +142,12 @@ public class PhatLootsConfig {
         lootMessage = getString(section, "LootMessage");
         lootBroadcast = getString(section, "LootBroadcast");
         lootConditionsNotMet = getString(section, "LootConditionsNotMet");
+        resetTimeForever = getString(section, "ResetTimeForever");
+        resetTimeDays = getString(section, "ResetTimeDays");
+        resetTimeHours = getString(section, "ResetTimeHours");
+        resetTimeMinutes = getString(section, "ResetTimeMinutes");
+        resetTimeSeconds = getString(section, "ResetTimeSeconds");
+        resetTimeMilliseconds = getString(section, "ResetTimeMilliseconds");
 
         PhatLootChest.chestName = getString(config, "ChestName");
 

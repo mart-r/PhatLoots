@@ -5,12 +5,9 @@ import com.codisimus.plugins.phatloots.PhatLoots;
 import com.codisimus.plugins.phatloots.PhatLootsConfig;
 import com.codisimus.plugins.phatloots.util.PhatLootsUtil;
 import com.codisimus.plugins.phatloots.gui.Tool;
+import com.tealcube.minecraft.bukkit.mythicdrops.api.MythicDropsApi;
 import java.util.*;
 import com.tealcube.minecraft.bukkit.mythicdrops.api.tiers.Tier;
-import com.tealcube.minecraft.bukkit.mythicdrops.tiers.TierMap;
-import com.tealcube.minecraft.bukkit.mythicdrops.utils.ItemStackUtil;
-import com.tealcube.minecraft.bukkit.mythicdrops.utils.ItemUtil;
-import com.tealcube.minecraft.bukkit.mythicdrops.utils.TierUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -114,20 +111,13 @@ public class UnidentifiedItem extends Loot {
         int amount = PhatLootsUtil.rollForInt(amountLower, amountUpper);
         while (amount > 0) {
             Tier tier = tierName.equalsIgnoreCase(RANDOM_TIER)
-                      ? TierMap.INSTANCE.getRandomTierWithChance()
-                      : TierUtil.getTier(tierName);
+                      ? MythicDropsApi.getMythicDrops().getTierManager().random()
+                      : MythicDropsApi.getMythicDrops().getTierManager().getByName(tierName);
             if (tier != null) {
-                Collection<Material> materials = ItemUtil.getMaterialsFromTier(tier);
-                Material material = ItemUtil.getRandomMaterialFromCollection(materials);
-                ItemStack mis = new com.tealcube.minecraft.bukkit.mythicdrops.identification.UnidentifiedItem(material);
-                if (durabilityLower > 0 || durabilityUpper > 0) {
-                    mis.setDurability((short) ItemStackUtil.getDurabilityForMaterial(mis.getType(), durabilityLower, durabilityUpper));
-                }
+                ItemStack mis = MythicDropsApi.getMythicDrops().getProductionLine().getIdentificationItemFactory().buildUnidentifiedItem(tier);
 
                 //Place the tier name as the last line of lore
-                ItemMeta meta = mis.hasItemMeta()
-                              ? mis.getItemMeta()
-                              : Bukkit.getItemFactory().getItemMeta(material);
+                ItemMeta meta = mis.getItemMeta();
                 List<String> lore = meta.hasLore()
                                   ? meta.getLore()
                                   : new ArrayList<>();
@@ -241,7 +231,7 @@ public class UnidentifiedItem extends Loot {
         if (tierList == null) {
             //Cache Tiers alphabetically
             tierList = new ArrayList<>();
-            for (Tier tier : TierMap.INSTANCE.values()) {
+            for (Tier tier : MythicDropsApi.getMythicDrops().getTierManager().get()) {
                 tierList.add(tier.getName());
             }
             Collections.sort(tierList);

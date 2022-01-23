@@ -12,6 +12,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Dispatches Commands for the PhatLoots Plugin
@@ -32,6 +34,16 @@ public class PhatLootsCommandSender implements ConsoleCommandSender {
         for (String string: strings) {
             sendMessage(string);
         }
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+        this.sendMessage(s);
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
+        this.sendMessage(strings);
     }
 
     @Override
@@ -143,22 +155,8 @@ public class PhatLootsCommandSender implements ConsoleCommandSender {
     public void sendRawMessage(String s) {
         throw new UnsupportedOperationException("Not supported.");
     }
-
-    @Override
-    public void sendMessage(UUID arg0, String arg1) {
-        // TODO Auto-generated method stub
         
-    }
-
-    @Override
-    public void sendMessage(UUID arg0, String[] arg1) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void sendRawMessage(UUID arg0, String arg1) {
-        // TODO Auto-generated method stub
-        
+    public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
+        this.sendRawMessage(s);
     }
 }
