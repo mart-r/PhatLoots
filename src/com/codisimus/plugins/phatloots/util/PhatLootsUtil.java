@@ -9,8 +9,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.codisimus.plugins.phatloots.PhatLoot;
 import com.codisimus.plugins.phatloots.PhatLoots;
 import com.codisimus.plugins.phatloots.PhatLootsConfig;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.lang.time.DateUtils;
+
+import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

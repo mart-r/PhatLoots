@@ -3,7 +3,6 @@ package com.codisimus.plugins.phatloots.conditions;
 import com.codisimus.plugins.phatloots.PhatLoot;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
